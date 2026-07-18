@@ -73,6 +73,6 @@ See the
 
 ## Licensing
 
-GNU General Public License v3.0 or later.
+MIT License.
 
-See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.
+See [MIT license] tab for the full text.
