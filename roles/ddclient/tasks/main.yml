@@ -1,0 +1,9 @@
+---
+# tasks/main.yml file for role ddclient
+- name: Check assertions
+  ansible.builtin.assert:
+    that:
+      - true
+    fail_msg: "Assertion failed."
+    success_msg: "Assertion succeeded."
+    quiet: true
