@@ -30,4 +30,3 @@ argument_specs:
         type: str
         required: true
         description: List of dns names to update
-
