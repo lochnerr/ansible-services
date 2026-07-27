@@ -1,2 +1,33 @@
 ---
 # meta/argument_specs.yml file for role ddclient
+
+argument_specs:
+  main:
+    short_description: Install and configure ddclient
+    description:
+      - This role installs the ddclient package and configures the service.
+
+    options:
+
+      ddclient_protocol:
+        type: str
+        required: true
+        description: The protocol to use
+        choices:
+          - zoneedit1
+
+      ddclient_login:
+        type: str
+        required: true
+        description: The dns host login username
+
+      ddclient_password:
+        type: str
+        required: true
+        description: The dns host login password
+
+      ddclient_hosts:
+        type: str
+        required: true
+        description: List of dns names to update
+

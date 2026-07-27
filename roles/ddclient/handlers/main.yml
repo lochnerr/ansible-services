@@ -1,2 +1,8 @@
 ---
 # handlers/main.yml file for role ddclient
+
+- name: Restart ddclient Service
+  ansible.builtin.service:
+    name: ddclient
+    state: restarted
+  no_log: true

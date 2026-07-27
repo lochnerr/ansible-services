@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+# Note: This should work on all ddclient versions for IPv4 hosts, not IPv6.  Will add enhancements for version 4.0.0+ IPv6 entries later (use=webv4, webv4=ipify-ipv4 use=webv6, webv6=ipify-ipv6).
+
+protocol=zoneedit1 login={{ ddclient_login }} password='{{ ddclient_password }}' use=web, web=https://dynamic.zoneedit.com/checkip.html {{ ddclient_hosts }}
+

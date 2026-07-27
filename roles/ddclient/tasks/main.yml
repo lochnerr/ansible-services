@@ -1,9 +1,37 @@
 ---
 # tasks/main.yml file for role ddclient
-- name: Check assertions
-  ansible.builtin.assert:
-    that:
-      - true
-    fail_msg: "Assertion failed."
-    success_msg: "Assertion succeeded."
-    quiet: true
+
+- name: Install ddclient Package
+  ansible.builtin.package:
+    name: ddclient
+    state: present
+    update_cache: true
+  no_log: true
+
+- name: Configure ddclient for Alpine
+  block:
+    - name: Add daemon option to ddclient startup
+      ansible.builtin.lineinfile:
+        path: /etc/init.d/ddclient
+        regexp: 'command_args='
+        line: 'command_args="-daemon 300 -pid ${pidfile}"'
+        state: present
+
+    - name: Set ddclient config file path for Alpine
+      ansible.builtin.set_fact:
+        ddclient_config_file: "/etc/ddclient/ddclient.conf"
+  when: ansible_facts['os_family'] == "Alpine"
+
+- name: Update ddclient Configuration
+  ansible.builtin.template:
+    src: ddclient-{{ ddclient_protocol }}.conf.j2
+    dest: "{{ ddclient_config_file | default ('/etc/ddclient.conf') }}"
+    backup: true
+  notify: Restart ddclient Service
+
+- name: Start and enable ddclient Service
+  ansible.builtin.service:
+    name: ddclient
+    state: started
+    enabled: true
+  no_log: true
