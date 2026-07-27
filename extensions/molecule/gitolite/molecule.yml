@@ -1,0 +1,7 @@
+---
+scenario:
+  name: gitolite
+  test_sequence:
+    - converge
+    - idempotence
+    - verify

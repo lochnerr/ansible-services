@@ -1,0 +1,14 @@
+---
+# Purpose: bring the instance to the desired state by running the role under test.
+# Molecule calls this playbook with 'molecule converge'.
+- name: Converge
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Linux O/S Family, Distribution and Version
+      ansible.builtin.debug:
+        msg: "Running on {{ ansible_facts['os_family'] }} Linux variant {{ ansible_facts['distribution'] }} Version {{ ansible_facts['distribution_version'] }}"
+
+    - name: Apply role under test
+      ansible.builtin.include_role:
+        name: gitolite
