@@ -1,2 +1,15 @@
 ---
 # handlers/main.yml file for role gitolite
+
+- name: Fix User and Group IDs
+  ansible.builtin.file:
+    path: /home/{{ gitolite_user }}
+    state: directory
+    owner: "{{ gitolite_user }}"
+    group: "{{ gitolite_group }}"
+    recurse: yes
+
+- name: Run gitolite Setup
+  ansible.builtin.shell: su -l {{ gitolite_user }} -c 'gitolite setup -pk {{ gitolite_admin_user }}.pub'
+  args:
+    creates: /home/{{ gitolite_user }}/.gitolite.rc

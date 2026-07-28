@@ -1,2 +1,6 @@
 ---
 # defaults/main.yml file for role gitolite
+
+gitolite_admin_user: admin
+gitolite_user: git
+gitolite_group: git

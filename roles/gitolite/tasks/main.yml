@@ -1,9 +1,54 @@
 ---
 # tasks/main.yml file for role gitolite
-- name: Check assertions
-  ansible.builtin.assert:
-    that:
-      - true
-    fail_msg: "Assertion failed."
-    success_msg: "Assertion succeeded."
-    quiet: true
+
+- name: Warning if not running on tested Linux family
+  ansible.builtin.debug:
+    msg: "Warning: This has not been tested on {{ ansible_facts['os_family'] }} based systems"
+  when: ansible_facts['os_family'] not in ['Debian', 'RedHat', 'Alpine']
+
+- name: Ensure gitolite user group exists, optionally with custom gid
+  ansible.builtin.group:
+    name: "{{ gitolite_group }}"
+    gid: "{{ gitolite_group_id | default(omit) }}"
+    state: present
+  notify: Fix User and Group IDs
+
+- name: Ensure gitolite user exists, optionally with custom uid
+  ansible.builtin.user:
+    name: "{{ gitolite_user }}"
+    group: "{{ gitolite_group }}"
+    comment: "Gitolite User"
+    uid: "{{ gitolite_user_id | default(omit) }}"
+    create_home: yes
+    state: present
+  notify: Fix User and Group IDs
+
+- name: Install RedHat/Debian gitolite Packages
+  ansible.builtin.package:
+    name:
+      - git
+      - gitolite3
+      - hostname
+    state: present
+    update_cache: true
+  no_log: true
+  when: ansible_facts['os_family'] in ['Debian', 'RedHat']
+
+- name: Install Alpine gitolite Packages
+  ansible.builtin.package:
+    name:
+      - git
+      - gitolite
+      - openssh-keygen
+    state: present
+    update_cache: true
+  no_log: true
+  when: ansible_facts['os_family'] == "Alpine"
+
+- name: Create or Update Admin User Key
+  ansible.builtin.copy:
+    content: "{{ gitolite_admin_key }}"
+    dest: /home/{{ gitolite_user }}/{{ gitolite_admin_user }}.pub
+    mode: '0644'
+  become_user: "{{ gitolite_user }}"
+  notify: Run gitolite Setup

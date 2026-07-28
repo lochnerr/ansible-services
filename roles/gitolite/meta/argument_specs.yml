@@ -1,2 +1,38 @@
 ---
 # meta/argument_specs.yml file for role gitolite
+
+argument_specs:
+  main:
+    short_description: Install and configure gitolite
+    description:
+      - This role installs and configures gitolite.
+
+    options:
+
+      gitolite_admin_key:
+        type: str
+        required: true
+        description: The ssh public key for the admin user
+
+      gitolite_admin_user:
+        type: str
+        default: admin
+        description: The gitolite admin user name
+
+      gitolite_user:
+        type: str
+        default: git
+        description: The gitolite user name
+
+      gitolite_group:
+        type: str
+        default: git
+        description: The gitolite group name
+
+      gitolite_user_id:
+        type: int
+        description: The gitolite user id
+
+      gitolite_group_id:
+        type: int
+        description: The gitolite group id
