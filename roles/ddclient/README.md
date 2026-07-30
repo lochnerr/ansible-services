@@ -1,7 +1,7 @@
 ---
-# ${namespace}.${collection} ${role} Role
+# clone1.services ddclient Role
 
-Role to install and configure ${role}.
+Role to install and configure ddclient.
 
 ## Requirements
 
@@ -59,4 +59,4 @@ MIT
 
 ## Author Information
 
-The ${namespace} DevOps Team
+The clone1 DevOps Team
