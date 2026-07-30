@@ -23,8 +23,7 @@ Including an example of how to use your role (for instance, with variables passe
 - name: Execute tasks on servers
   hosts: servers
   roles:
-    - role: clone1.services.run
-      run_x: 42
+    - role: clone1.services.ddclient
 ```
 
 Another way to consume this role would be:
@@ -36,9 +35,7 @@ Another way to consume this role would be:
   tasks:
     - name: Trigger invocation of run role
       ansible.builtin.include_role:
-        name: clone1.services.run
-      vars:
-        run_x: 42
+        name: clone1.services.ddclient
 ```
 
 ## Role Idempotency
