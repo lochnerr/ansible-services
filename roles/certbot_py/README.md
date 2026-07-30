@@ -1,7 +1,7 @@
 ---
-# ${namespace}.${collection} ${role} Role
+# clone1.services certbot_py Role
 
-Role to install and configure ${role}.
+Role to install and configure latest certbot Python pip release.
 
 ## Requirements
 
@@ -23,8 +23,7 @@ Including an example of how to use your role (for instance, with variables passe
 - name: Execute tasks on servers
   hosts: servers
   roles:
-    - role: clone1.services.run
-      run_x: 42
+    - role: clone1.services.certbot_py
 ```
 
 Another way to consume this role would be:
@@ -36,9 +35,7 @@ Another way to consume this role would be:
   tasks:
     - name: Trigger invocation of run role
       ansible.builtin.include_role:
-        name: clone1.services.run
-      vars:
-        run_x: 42
+        name: clone1.services.certbot_py
 ```
 
 ## Role Idempotency
@@ -59,4 +56,4 @@ MIT
 
 ## Author Information
 
-The ${namespace} DevOps Team
+The clone1 DevOps Team
