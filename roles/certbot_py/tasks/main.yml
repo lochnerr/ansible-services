@@ -1,0 +1,87 @@
+---
+# tasks/main.yml file for role certbot_py
+
+- name: Assert O/S Support
+  ansible.builtin.assert:
+    that: ansible_facts['os_family'] in ['Debian', 'RedHat']
+
+- name: Install Debian python Packages
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-dev
+      - python3-venv
+      - libaugeas-dev
+      - gcc
+    state: present
+    update_cache: true
+  no_log: true
+  when: ansible_facts['os_family'] in ['Debian']
+
+- name: Install RedHat python Packages
+  ansible.builtin.package:
+    name:
+      - python3
+      - python3-devel
+      - augeas-devel
+      - gcc
+      - logrotate
+    state: present
+    update_cache: true
+  no_log: true
+  when: ansible_facts['os_family'] in ['RedHat']
+
+- name: Ensure cerbot O/S Packages Removed
+  ansible.builtin.package:
+    name:
+      - certbot
+    state: absent
+
+- name: Install certbot into the specified (virtualenv), inheriting none of the globally installed modules
+  ansible.builtin.pip:
+    name: 
+      - certbot
+      - certbot-nginx
+      - pip
+    state: latest
+    virtualenv: /opt/certbot
+    virtualenv_command: python3 -m venv
+
+- name: Create certbot symlink
+  ansible.builtin.file:
+    src: /opt/certbot/bin/certbot
+    dest: /usr/local/bin/certbot
+    state: link
+
+- name: Get certbot version
+  ansible.builtin.command:
+    argv:
+      - /usr/local/bin/certbot
+      - --version
+  register: certbot_command
+  changed_when: false
+
+- name: Update certbot version
+  ansible.builtin.copy:
+    content: "{{ certbot_command.stdout }}"
+    dest: /opt/certbot/certbot-version.txt
+
+- name: Copy certbot rotate config
+  ansible.builtin.copy:
+    src: files/logrotate.conf
+    dest: /etc/logrotate.d/certbot
+    mode: '0644'
+
+- name: Copy certbot service
+  ansible.builtin.copy:
+    src: files/certbot.service
+    dest: /usr/lib/systemd/system
+    mode: '0644'
+
+- name: Copy certbot timer
+  ansible.builtin.copy:
+    src: files/certbot.timer
+    dest: /usr/lib/systemd/system
+    mode: '0644'
+  notify: Enable and Reload certbot Timer
+

@@ -1,0 +1,8 @@
+[Unit]
+Description=This service automatically renews any certbot certificates found
+
+[Service]
+EnvironmentFile=-/opt/certbot/hooks
+Type=oneshot
+ExecStart=/opt/certbot/bin/certbot renew --noninteractive --no-random-sleep-on-renew $PRE_HOOK $POST_HOOK $RENEW_HOOK $DEPLOY_HOOK $CERTBOT_ARGS
+

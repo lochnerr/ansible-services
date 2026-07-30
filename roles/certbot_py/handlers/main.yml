@@ -1,0 +1,8 @@
+---
+# handlers/main.yml file for role certbot_py
+
+- name: Enable and Reload certbot Timer
+  ansible.builtin.service:
+    name: certbot.timer
+    enabled: true
+    state: reloaded

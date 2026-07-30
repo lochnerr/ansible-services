@@ -1,0 +1,39 @@
+---
+galaxy_info:
+  author: devops
+  description: clone1.services certbot_py Role
+  company: clone1
+
+  license: MIT
+
+  min_ansible_version: "2.14"
+
+  #
+  # Provide a list of supported platforms, and for each platform a list of versions.
+  # If you don't wish to enumerate all versions for a particular platform, use 'all'.
+  # To view available platforms and versions (or releases), visit:
+  # https://galaxy.ansible.com/api/v1/platforms/
+  #
+  platforms:
+  - name: Fedora
+    versions:
+    - 44
+    - 43
+    - 42
+  - name: Ubuntu
+    versions:
+    - 26.04
+    - 24.04
+    - 22.04
+  - name: Debian
+    versions:
+    - 13
+    - 12
+    - 11
+  - name: AmazonLinux
+    versions:
+    - 2023
+
+  galaxy_tags: []
+
+dependencies: []
