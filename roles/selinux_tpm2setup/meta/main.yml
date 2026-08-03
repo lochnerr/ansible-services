@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: devops
+  description: clone1.services selinux_tpm2setup Role
+  company: clone1
+
+  license: MIT
+
+  min_ansible_version: "2.14"
+
+  platforms:
+  - name: Fedora
+    versions:
+    - 43+
+
+  galaxy_tags: []
+
+dependencies: []

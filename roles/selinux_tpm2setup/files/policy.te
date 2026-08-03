@@ -1,0 +1,11 @@
+module selinux-fix-tpm2-setup 1.0;
+
+require {
+	type dosfs_t;
+	type init_t;
+	class file { create open read rename setattr write };
+}
+
+#============= init_t ==============
+allow init_t dosfs_t:file { create open read rename setattr write };
+
