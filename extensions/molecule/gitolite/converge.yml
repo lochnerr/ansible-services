@@ -4,6 +4,7 @@
 - name: Converge
   hosts: all
   gather_facts: true
+  become: true
   tasks:
     - name: Linux O/S Family, Distribution and Version
       ansible.builtin.debug:
