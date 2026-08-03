@@ -49,6 +49,6 @@
   ansible.builtin.copy:
     content: "{{ gitolite_admin_key }}"
     dest: /home/{{ gitolite_user }}/{{ gitolite_admin_user }}.pub
+    owner: "{{ gitolite_user }}"
     mode: '0644'
-  become_user: "{{ gitolite_user }}"
   notify: Run gitolite Setup
