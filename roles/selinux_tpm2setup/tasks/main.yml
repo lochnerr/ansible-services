@@ -5,15 +5,19 @@
   ansible.builtin.assert:
     that: ansible_facts['os_family'] in ['RedHat']
 
-- name: Install Policy Packages
-  ansible.builtin.package:
-    name:
-      - checkpolicy
-      - policycoreutils
-    state: present
+- name: Gather service facts
+  ansible.builtin.service_facts:
   no_log: true
 
-- name: Fetch logs for systemd-tpm2-setup Service
+- name: Display systemd-tpm2-setup service status
+  ansible.builtin.debug:
+    var: ansible_facts.services['systemd-tpm2-setup.service']
+
+- name: End role if systemd-tpm2-setup did not fail
+  ansible.builtin.meta: end_role
+  when: ansible_facts.services['systemd-tpm2-setup.service'].status != 'failed'
+
+- name: Fetch logs for systemd-tpm2-setup service
   ansible.builtin.command: journalctl -u systemd-tpm2-setup --no-pager -b -0
   register: tpm2setup_output
   changed_when: false
@@ -25,6 +29,14 @@
 - name: End role if systemd-tpm2-setup did not fail on permission denied
   ansible.builtin.meta: end_role
   when: tpm2setup_output.stdout_lines | map('regex_search', 'Failed to write anchor secret file to .* Permission denied') | select | list | length < 1
+
+- name: Install Policy Packages
+  ansible.builtin.package:
+    name:
+      - checkpolicy
+      - policycoreutils
+    state: present
+  no_log: true
 
 - name: Copy type enforcement policy file
   ansible.builtin.copy:
@@ -43,4 +55,9 @@
 
 - name: Apply the policy package
   ansible.builtin.command: semodule -i /tmp/selinux-fix-tpm2-setup.pp
+
+- name: Restart the service
+  ansible.builtin.service:
+    name: systemd-tpm2-setup
+    state: started
 

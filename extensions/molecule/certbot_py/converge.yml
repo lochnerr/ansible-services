@@ -10,6 +10,6 @@
       ansible.builtin.debug:
         msg: "Running on {{ ansible_facts['os_family'] }} Linux variant {{ ansible_facts['distribution'] }} Version {{ ansible_facts['distribution_version'] }}"
 
-    - name: Apply role under test
+    - name: Apply role
       ansible.builtin.include_role:
-        name: clone1.services.certbot_py
+        name: certbot_py

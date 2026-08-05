@@ -4,11 +4,12 @@
 - name: Converge
   hosts: all
   gather_facts: true
+  become: true
   tasks:
     - name: Linux O/S Family, Distribution and Version
       ansible.builtin.debug:
         msg: "Running on {{ ansible_facts['os_family'] }} Linux variant {{ ansible_facts['distribution'] }} Version {{ ansible_facts['distribution_version'] }}"
 
-    - name: Apply role under test
+    - name: Apply role
       ansible.builtin.include_role:
-        name: clone1.services.selinux_tpm2setup
+        name: selinux_tpm2setup
