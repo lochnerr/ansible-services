@@ -1,0 +1,19 @@
+
+module systemd-tpm2-setup 1.0;
+
+require {
+	type syslogd_var_run_t;
+	type init_t;
+	type dosfs_t;
+	class file { create open read rename setattr write };
+}
+
+#============= init_t ==============
+
+#!!!! This avc is allowed in the current policy
+allow init_t dosfs_t:file create;
+allow init_t dosfs_t:file { open read rename setattr write };
+
+#!!!! This avc is allowed in the current policy
+allow init_t syslogd_var_run_t:file write;
+allow init_t syslogd_var_run_t:file setattr;
