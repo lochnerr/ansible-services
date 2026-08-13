@@ -1,0 +1,21 @@
+---
+# meta/argument_specs.yml file for role selinux_policy
+
+argument_specs:
+  main:
+    short_description: Apply an SELinux Type Enforcemeny Policy
+    description:
+      - This role will apply a type enforcement policy to a server.
+
+    options:
+
+      selinux_policy_file:
+        type: str
+        required: true
+        description: The full path of the specification file
+
+      selinux_policy_name:
+        type: str
+        required: true
+        description: The module name as specified in the specification file
+

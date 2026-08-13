@@ -1,7 +1,7 @@
 ---
-# clone1.services ddclient Role
+# clone1.services nginx Role
 
-Role to install and configure ddclient.
+Role to install and configure nginx.
 
 ## Requirements
 
@@ -21,12 +21,7 @@ No dependencies.
 - name: Execute tasks on servers
   hosts: servers
   roles:
-    - ddclient
-  vars:
-    ddclient_protocol: zoneedit1
-    ddclient_hosts: www.example.com
-    ddclient_login: your_login
-    ddclient_password: your_password
+    - nginx
 ```
 
 ## Role Idempotency

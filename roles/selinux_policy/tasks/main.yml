@@ -1,0 +1,64 @@
+---
+# tasks/main.yml file for role selinux_policy
+
+- name: End role if SELinux is not supported
+  ansible.builtin.meta: end_role
+  when: ansible_facts['os_family'] not in ['RedHat']
+
+# After this operation, 8 MiB extra will be used (install 12 MiB, remove 3 MiB).
+- name: Install Policy Packages
+  ansible.builtin.package:
+    name:
+      - checkpolicy
+      - policycoreutils
+    state: present
+  no_log: true
+
+- name: Ensure directory for SELinux policies
+  ansible.builtin.file:
+    path: "/etc/ansible/selinux"
+    state: directory
+
+- name: Copy type enforcement policy file
+  ansible.builtin.copy:
+    src: "{{ selinux_policy_file }}"
+    dest: "/etc/ansible/selinux/{{ selinux_policy_name }}.te"
+  register: policy_file_copy
+
+# Process the type enforcement file and apply it.  If a failure occurs, remove the policy file to force
+# it to be copied again and retried on the next run.
+
+- name: Compile and apply the Type Enforcement Policy specification
+  when: policy_file_copy is changed
+  block:
+    - name: Compile the type enforcement file
+      ansible.builtin.command:
+        cmd: "checkmodule -M -m -o /tmp/{{ selinux_policy_name }}.mod /etc/ansible/selinux/{{ selinux_policy_name }}.te"
+      changed_when: false
+
+    - name: Package the module file into a loadable policy package
+      ansible.builtin.command:
+        cmd: "semodule_package -o /tmp/{{ selinux_policy_name }}.pp -m /tmp/{{ selinux_policy_name }}.mod"
+      changed_when: false
+
+    - name: Check for SELinux
+      ansible.builtin.shell:
+        cmd: "getenforce || true"
+      register: getenforce_result
+      changed_when: false
+
+    - name: Apply the policy package
+      ansible.builtin.command:
+        cmd: "semodule -i /tmp/{{ selinux_policy_name }}.pp"
+      when: getenforce_result.stdout in ['Enforcing', 'Permissive']
+
+  rescue:
+    - name: Remove policy file pn error to signal failure on next run
+      ansible.builtin.file:
+        path: "/etc/ansible/selinux/{{ selinux_policy_name }}.te"
+        state: absent
+
+    - name: Ensure the playbook still reports a failure
+      ansible.builtin.fail:
+        msg: "A failure occurred applying the SELinux policy: {{ selinux_policy_name }}"
+

@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: devops
-  description: clone1.services gitolite Role
+  description: Simple Role to Install and Enable openvpn
   company: clone1
 
   license: MIT

@@ -1,0 +1,7 @@
+---
+scenario:
+  name: selinux_policy
+  test_sequence:
+    - converge
+    - idempotence
+    - verify

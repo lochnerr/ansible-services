@@ -17,25 +17,11 @@ No dependencies.
 
 ## Example Playbook
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
 ```yaml
 - name: Execute tasks on servers
   hosts: servers
   roles:
-    - role: clone1.services.gitolite
-```
-
-Another way to consume this role would be:
-
-```yaml
-- name: Initialize the run role from clone1.services
-  hosts: servers
-  gather_facts: false
-  tasks:
-    - name: Trigger invocation of run role
-      ansible.builtin.include_role:
-        name: clone1.services.gitolite
+    - gitolite
 ```
 
 ## Role Idempotency

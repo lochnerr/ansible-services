@@ -1,0 +1,17 @@
+---
+# tasks/main.yml file for role nginx
+
+- name: Install Package
+  ansible.builtin.package:
+    name: nginx
+    state: present
+    update_cache: true
+  no_log: true
+
+- name: Enable and Start Service
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+  no_log: true
+

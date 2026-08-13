@@ -1,0 +1,7 @@
+---
+scenario:
+  name: nginx
+  test_sequence:
+    - converge
+    - idempotence
+    - verify

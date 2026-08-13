@@ -1,0 +1,31 @@
+---
+# tasks/main.yml file for role wireguard
+
+- name: Install Package
+  ansible.builtin.package:
+    name: wireguard-tools
+    state: present
+    update_cache: true
+  no_log: true
+
+- name: Get list of config files, if any
+  ansible.builtin.find:
+    paths: /etc/wireguard
+    patterns: "*.conf"
+    recurse: no
+    file_type: file
+  register: find_result
+
+- name: Display config files to be enabled
+  ansible.builtin.debug:
+    msg: "wg-quick@{{ item.path | basename | splitext | first }}"
+  loop: "{{ find_result.files }}"
+
+- name: Enable service if conf file exists
+  ansible.builtin.service:
+    name: "wg-quick@{{ item.path | basename | splitext | first }}"
+    state: started
+    enabled: true
+  loop: "{{ find_result.files }}"
+  no_log: true
+

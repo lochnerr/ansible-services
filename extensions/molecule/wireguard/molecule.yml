@@ -1,0 +1,7 @@
+---
+scenario:
+  name: wireguard
+  test_sequence:
+    - converge
+    - idempotence
+    - verify

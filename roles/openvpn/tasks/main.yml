@@ -1,0 +1,31 @@
+---
+# tasks/main.yml file for role openvpn
+
+- name: Install Package
+  ansible.builtin.package:
+    name: openvpn
+    state: present
+    update_cache: true
+  no_log: true
+
+- name: Get list of config files, if any
+  ansible.builtin.find:
+    paths: /etc/openvpn/server
+    patterns: "*.conf"
+    recurse: no
+    file_type: file
+  register: find_result
+
+- name: Display config files to be enabled
+  ansible.builtin.debug:
+    msg: "openvpn-server@{{ item.path | basename | splitext | first }}"
+  loop: "{{ find_result.files }}"
+
+- name: Enable service if conf file exists
+  ansible.builtin.systemd_service:
+    name: "openvpn-server@{{ item.path | basename | splitext | first }}"
+    state: started
+    enabled: true
+  loop: "{{ find_result.files }}"
+  no_log: true
+

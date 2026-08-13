@@ -17,13 +17,11 @@ No dependencies.
 
 ## Example Playbook
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
 ```yaml
 - name: Execute tasks on servers
   hosts: servers
   roles:
-    - role: clone1.services.selinux_tpm2setup
+    - selinux_tpm2setup
 ```
 
 ## Role Idempotency

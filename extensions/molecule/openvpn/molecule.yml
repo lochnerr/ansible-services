@@ -1,0 +1,7 @@
+---
+scenario:
+  name: openvpn
+  test_sequence:
+    - converge
+    - idempotence
+    - verify

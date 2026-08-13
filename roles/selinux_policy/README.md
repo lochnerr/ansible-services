@@ -1,7 +1,7 @@
 ---
-# clone1.services ddclient Role
+# clone1.services selinux_policy Role
 
-Role to install and configure ddclient.
+Role to install an SELinux Type Enforcement Policy.
 
 ## Requirements
 
@@ -21,12 +21,10 @@ No dependencies.
 - name: Execute tasks on servers
   hosts: servers
   roles:
-    - ddclient
+    - selinux_policy
   vars:
-    ddclient_protocol: zoneedit1
-    ddclient_hosts: www.example.com
-    ddclient_login: your_login
-    ddclient_password: your_password
+    selinux_policy_file: "../gitolite/files/httpd-fcgiwrap.te"
+    selinux_policy_name: "httpd-fcgiwrap"
 ```
 
 ## Role Idempotency
