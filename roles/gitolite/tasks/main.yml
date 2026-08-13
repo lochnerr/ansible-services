@@ -29,6 +29,7 @@
       - git
       - gitolite3
       - hostname
+      - fcgiwrap
     state: present
     update_cache: true
   no_log: true
@@ -40,6 +41,7 @@
       - git
       - gitolite
       - openssh-keygen
+      - fcgiwrap
     state: present
     update_cache: true
   no_log: true
@@ -52,3 +54,36 @@
     owner: "{{ gitolite_user }}"
     mode: '0644'
   notify: Run gitolite Setup
+
+# The remainder of this role deals with getting the fastcgi socket permissions right.
+
+- name: Check if httpd user exists using getent
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ gitolite_httpd_user }}"
+    fail_key: false
+
+- name: Nn more to do if httpd user does not exist
+  ansible.builtin.meta: end_role
+  when: ansible_facts['getent_passwd'][gitolite_httpd_user] is none
+
+- name: Add httpd to a gitolite group
+  ansible.builtin.user:
+    name: "{{ gitolite_httpd_user }}"
+    groups: "{{ gitolite_group }}"
+    append: true
+
+- name: Enable SELinux policy to allow httpd user to access the gitolite socket
+  ansible.builtin.include_role:
+    name: selinux_policy
+  vars:
+    selinux_policy_file: "../gitolite/files/httpd-fcgiwrap.te"
+    selinux_policy_name: "httpd-fcgiwrap"
+
+- name: Enable and start Fast CGI socket
+  ansible.builtin.service:
+    name: "fcgiwrap@{{ gitolite_user }}.socket"
+    enabled: true
+    state: started
+  when: ansible_facts['os_family'] not in ['Alpine']
+  no_log: true

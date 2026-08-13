@@ -19,6 +19,11 @@ argument_specs:
         default: admin
         description: The gitolite admin user name
 
+      gitolite_httpd_user:
+        type: str
+        default: nginx
+        description: The gitolite httpd user name, typically nginx, apache or www-data
+
       gitolite_user:
         type: str
         default: git

@@ -14,7 +14,7 @@
   when: ansible_facts.services['systemd-tpm2-setup.service'].status != 'failed'
 
 - name: Fetch logs for systemd-tpm2-setup service
-  ansible.builtin.command: journalctl -u systemd-tpm2-setup --no-pager -b -0
+  ansible.builtin.command: journalctl -u systemd-tpm2-setup --no-pager
   register: tpm2setup_output
   changed_when: false
   no_log: true
