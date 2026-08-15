@@ -39,4 +39,3 @@
     name: systemd-tpm2-setup
     state: started
   no_log: true
-

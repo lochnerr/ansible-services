@@ -18,4 +18,3 @@ argument_specs:
         type: str
         required: true
         description: The module name as specified in the specification file
-

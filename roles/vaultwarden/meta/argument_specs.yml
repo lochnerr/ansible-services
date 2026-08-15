@@ -1,0 +1,46 @@
+---
+# meta/argument_specs.yml file for role vaultwarden
+
+argument_specs:
+  main:
+    short_description: Install and configure vaultwarden
+    description:
+      - This role installs and configures vaultwarden.
+
+    options:
+
+      vaultwarden_domain:
+        type: str
+        required: true
+        description: The domain name, e.g. vaultwarden.eample.com
+
+      vaultwarden_user:
+        type: str
+        default: vaultwarden
+        description: The vaultwarden user name
+
+      vaultwarden_group:
+        type: str
+        default: vaultwarden
+        description: The vaultwarden group name
+
+      vaultwarden_port:
+        type: str
+        default: 127.0.0.1:8000
+        description: The vaultwarden http host port to bind
+
+      vaultwarden_admin_token:
+        type: str
+        description: The encoded token (password) of the admin user
+
+      vaultwarden_public_key:
+        type: str
+        description: An optional public key to be added to the vaultwarden authorized_keys file
+
+      vaultwarden_user_id:
+        type: int
+        description: The vaultwarden user id
+
+      vaultwarden_group_id:
+        type: int
+        description: The vaultwarden group id

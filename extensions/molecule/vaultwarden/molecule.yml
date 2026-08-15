@@ -1,0 +1,7 @@
+---
+scenario:
+  name: vaultwarden
+  test_sequence:
+    - converge
+    - idempotence
+    - verify

@@ -28,4 +28,3 @@
     enabled: true
   loop: "{{ find_result.files }}"
   no_log: true
-

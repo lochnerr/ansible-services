@@ -1,0 +1,78 @@
+---
+# tasks/main.yml file for role vaultwarden
+
+- name: Abort if not running on tested Linux family
+  ansible.builtin.assert:
+    that: ansible_facts['os_family'] in ['Debian', 'RedHat']
+
+- name: Ensure user group exists, optionally with custom gid
+  ansible.builtin.group:
+    name: "{{ vaultwarden_group }}"
+    gid: "{{ vaultwarden_group_id | default(omit) }}"
+    state: present
+
+- name: Ensure user exists, optionally with custom uid
+  ansible.builtin.user:
+    name: "{{ vaultwarden_user }}"
+    group: "{{ vaultwarden_group }}"
+    comment: "vaultwarden User"
+    uid: "{{ vaultwarden_user_id | default(omit) }}"
+    create_home: yes
+    state: present
+
+- name: Ensure user lingering is enabled for background execution
+  ansible.builtin.command:
+    cmd: "loginctl enable-linger {{ vaultwarden_user }}"
+    creates: "/var/lib/systemd/linger/{{ vaultwarden_user }}"
+
+- name: Install Packages
+  ansible.builtin.package:
+    name:
+      - podman
+      - systemd-container
+    state: present
+    update_cache: true
+  no_log: true
+
+- name: Create user directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ vaultwarden_user }}"
+    mode: '0755'
+  loop:
+    - "/home/{{ vaultwarden_user }}/.config/containers/systemd"
+    - "/home/{{ vaultwarden_user }}/data"
+    - "/home/{{ vaultwarden_user }}/.ssh"
+
+- name: Add an Authorized User Public Key
+  ansible.builtin.lineinfile:
+    path: /home/{{ vaultwarden_user }}/.ssh/authorized_keys
+    line: "{{ vaultwarden_public_key }}"
+    state: present
+    create: true
+  when: vaultwarden_public_key is defined and (vaultwarden_public_key | default('')) | length >= 0
+
+- name: Update systemd container unit
+  ansible.builtin.template:
+    src: vaultwarden.container.j2
+    dest: "/home/{{ vaultwarden_user }}/.config/containers/systemd/vaultwarden.container"
+    owner: "{{ vaultwarden_user }}"
+    mode: '0644'
+    backup: true
+  notify: Reload and Restart Service
+
+- name: Update systemd environment file
+  ansible.builtin.template:
+    src: vaultwarden.env.j2
+    dest: "/home/{{ vaultwarden_user }}/vaultwarden.env"
+    owner: "{{ vaultwarden_user }}"
+    mode: '0644'
+    backup: true
+  notify: Reload and Restart Service
+
+- name: Allow http server to make network connections
+  ansible.builtin.command:
+    cmd: "setsebool -P httpd_can_network_connect on"
+  changed_when: false
+  when: ansible_facts['os_family'] in ['RedHat']

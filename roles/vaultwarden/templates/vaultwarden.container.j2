@@ -1,0 +1,19 @@
+[Unit]
+Description=Vaultwarden Container
+
+[Container]
+Image=quay.io/vaultwarden/server:latest
+AutoUpdate=registry
+ContainerName=vaultwarden
+
+HostName={{ vaultwarden_domain }}
+
+Volume=/home/vaultwarden/data:/data:Z
+
+EnvironmentFile=/home/vaultwarden/vaultwarden.env
+
+PublishPort={{ vaultwarden_port }}:80
+
+[Install]
+WantedBy=default.target
+

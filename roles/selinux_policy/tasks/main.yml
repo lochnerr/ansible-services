@@ -61,4 +61,3 @@
     - name: Ensure the playbook still reports a failure
       ansible.builtin.fail:
         msg: "A failure occurred applying the SELinux policy: {{ selinux_policy_name }}"
-
